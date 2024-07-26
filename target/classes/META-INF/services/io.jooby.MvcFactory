@@ -1,0 +1,5 @@
+io.github.jonaskahn.controllers.auth.AuthController_
+io.github.jonaskahn.controllers.user.UserController_
+io.github.jonaskahn.controllers.HealthController_
+io.github.jonaskahn.controllers.TestRoleController_
+
