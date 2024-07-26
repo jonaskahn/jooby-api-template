@@ -82,25 +82,22 @@ curl --location --request DELETE 'http://localhost:8080/api/auth/secure/logout' 
 - Using [Pac4j](https://jooby.io/modules/pac4j/) Module as Security Layer
 
 ```java
-        install(new Pac4jModule().
 
-client(
+        install(new Pac4jModule().client(
                         "/api/secure/*",
-                        conf ->new
-
-HeaderClient(
+                        conf -> new HeaderClient(
                                 "Authorization",
-                                        "Bearer ",
-                                        new AdvancedJwtAuthenticator(
+                                "Bearer ",
+                                new AdvancedJwtAuthenticator(
                                         require(JedisPooled.class),
-                                        new
-
-SecretSignatureConfiguration(conf.getString("jwt.salt")
+                                        new SecretSignatureConfiguration(conf.getString("jwt.salt")
                                         )
-                                                )
-                                                )
-                                                )
-                                                );
+                                )
+                        )
+                )
+        );
+
+
 ```
 
 1. Using `HeaderClient` to tell Jooby read `Bearer` token from header
