@@ -109,7 +109,7 @@ curl --location --request DELETE 'http://localhost:8080/api/auth/secure/logout' 
 So, I solved these problems by store `jid` of JWT in Redis, after `validate` raw token, before `createProfile` I made a
 simple check to ensure the `jid` exists in `redis`. If no, token is invalid
 
-See [AdvancedJwtAuthenticator.kt](src/main/java/io/github/jonaskahn/middlewares/jwt/AdvancedJwtAuthenticator.kt)
+See [AdvancedJwtAuthenticator.kt](src/main/java/io/github/jonaskahn/middlewares/jwt/AdvancedJwtAuthenticator.java)
 
 ```java
 public class AdvancedJwtAuthenticator extends JwtAuthenticator {
@@ -135,7 +135,7 @@ public class AdvancedJwtAuthenticator extends JwtAuthenticator {
 
 3. For now, when you want `logout`, just delete the related `jid` in `redis`.
 
-### [Role Access Verifier](src/main/java/io/github/jonaskahn/middlewares/role/AccessVerifier.kt)
+### [Role Access Verifier](src/main/java/io/github/jonaskahn/middlewares/role/AccessVerifier.java)
 
 ```java
 
@@ -167,7 +167,7 @@ public class AccessVerifierImpl implements AccessVerifier {
 - `hasRole` or `hasAnyRoles` will check and return `true`/`false`, while `requireRole` and `requireAnyRoles` will
   explicitly throw exception if you do not have access.
 
-### [JpaQueryExecutor](src/main/java/io/github/jonaskahn/assistant/query/JpaQueryExecutor.kt)
+### [JpaQueryExecutor](src/main/java/io/github/jonaskahn/assistant/query/JpaQueryExecutor.java)
 
 - **Problem**: Sometimes we want to retrieve data from database via native query, but we do not want manually map
   field's value from result to pojo class.
@@ -177,7 +177,7 @@ public class AccessVerifierImpl implements AccessVerifier {
 ```java
 public Optional<UserDto> findCustomActivatedUserByPreferredUsername(Long preferredUsername) {
     var query =
-            entityManager.createNativeQuery("select * from users where preferred_username = :preferredUsername and status = :status")
+            entityManager.createNativeQuery("select * from users where preferred_username = :preferredUsername and status = :status");
     try {
         var result = JpaQueryExecutor
                 .builder(UserDto.class)
@@ -186,11 +186,11 @@ public Optional<UserDto> findCustomActivatedUserByPreferredUsername(Long preferr
                                 "status", Status.Code.ACTIVATED
                         )
                 )
-                .getSingleResult()
-        return Optional.of(result)
+                .getSingleResult();
+        return Optional.of(result);
     } catch (Exception e) {
-        log.warn("Could not find the users with given preferredUsername", e)
-        return Optional.empty()
+        log.warn("Could not find the users with given preferredUsername", e);
+        return Optional.empty();
     }
 }
 ```
