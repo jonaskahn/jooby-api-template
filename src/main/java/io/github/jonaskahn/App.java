@@ -56,6 +56,7 @@ public class App extends Jooby {
                 )
         );
 
+
         use(new TransactionalRequest().enabledByDefault(true));
         setContextAsService(true);
 

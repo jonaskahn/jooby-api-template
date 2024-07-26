@@ -112,7 +112,7 @@ SecretSignatureConfiguration(conf.getString("jwt.salt")
 So, I solved these problems by store `jid` of JWT in Redis, after `validate` raw token, before `createProfile` I made a
 simple check to ensure the `jid` exists in `redis`. If no, token is invalid
 
-See [AdvancedJwtAuthenticator.kt](src/main/kotlin/io/github/jonaskahn/middlewares/jwt/AdvancedJwtAuthenticator.kt)
+See [AdvancedJwtAuthenticator.kt](src/main/java/io/github/jonaskahn/middlewares/jwt/AdvancedJwtAuthenticator.kt)
 
 ```java
 public class AdvancedJwtAuthenticator extends JwtAuthenticator {
@@ -138,7 +138,7 @@ public class AdvancedJwtAuthenticator extends JwtAuthenticator {
 
 3. For now, when you want `logout`, just delete the related `jid` in `redis`.
 
-### [Role Access Verifier](src/main/kotlin/io/github/jonaskahn/middlewares/role/AccessVerifier.kt)
+### [Role Access Verifier](src/main/java/io/github/jonaskahn/middlewares/role/AccessVerifier.kt)
 
 ```java
 
@@ -170,7 +170,7 @@ public class AccessVerifierImpl implements AccessVerifier {
 - `hasRole` or `hasAnyRoles` will check and return `true`/`false`, while `requireRole` and `requireAnyRoles` will
   explicitly throw exception if you do not have access.
 
-### [JpaQueryExecutor](src/main/kotlin/io/github/jonaskahn/assistant/query/JpaQueryExecutor.kt)
+### [JpaQueryExecutor](src/main/java/io/github/jonaskahn/assistant/query/JpaQueryExecutor.kt)
 
 - **Problem**: Sometimes we want to retrieve data from database via native query, but we do not want manually map
   field's value from result to pojo class.
