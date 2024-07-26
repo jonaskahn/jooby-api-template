@@ -8,7 +8,7 @@
 
 - [Checkout](https://github.com/jonaskahn/kooby-api-template)
 
-## Which's included?
+## What's included?
 
 - [x] Support Default JWT
 - [x] Support Role Access Layer
