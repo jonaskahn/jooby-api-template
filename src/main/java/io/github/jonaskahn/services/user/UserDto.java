@@ -1,6 +1,8 @@
 package io.github.jonaskahn.services.user;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.jonaskahn.assistant.jackson.StringToStringCollectionDeserializer;
 import io.github.jonaskahn.entities.enums.Status;
 import lombok.Builder;
 
@@ -16,6 +18,7 @@ public record UserDto(
         @JsonAlias("full_name")
         String fullName,
         Status status,
+        @JsonDeserialize(using = StringToStringCollectionDeserializer.class)
         List<String> roles,
         @JsonAlias("created_at")
         Instant createdAt,
