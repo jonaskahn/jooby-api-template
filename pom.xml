@@ -23,8 +23,8 @@
         <jooby.version>3.2.6</jooby.version>
         <lombok.version>1.18.34</lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <jackson.version>3.2.6</jackson.version>
-        <jackson-datatype-jsr310.version>2.17.2</jackson-datatype-jsr310.version>
+        <jooby-jackson.version>3.2.6</jooby-jackson.version>
+        <jackson.version>2.17.2</jackson.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
         <jakarta.el.version>5.0.1</jakarta.el.version>
         <expressly.version>5.0.0</expressly.version>
@@ -141,12 +141,17 @@
         <dependency>
             <groupId>io.jooby</groupId>
             <artifactId>jooby-jackson</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jooby-jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-datatype-jsr310.version}</version>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>

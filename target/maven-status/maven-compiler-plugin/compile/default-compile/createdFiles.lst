@@ -31,7 +31,6 @@ io/github/jonaskahn/middlewares/validate/BeanValidatorImpl.class
 io/github/jonaskahn/assistant/query/QueryExecutor.class
 io/github/jonaskahn/exception/ForbiddenAccessException.class
 io/github/jonaskahn/constants/RedisNameSpace.class
-io/github/jonaskahn/App$RouteDefinition.class
 io/github/jonaskahn/assistant/Language.class
 io/github/jonaskahn/assistant/query/QueryBuilder.class
 io/github/jonaskahn/assistant/JacksonMapper.class
@@ -52,6 +51,7 @@ io/github/jonaskahn/constants/Roles.class
 io/github/jonaskahn/exception/AuthenticationException.class
 io/github/jonaskahn/middlewares/role/AccessVerifierImpl.class
 io/github/jonaskahn/services/user/UserDto.class
+io/github/jonaskahn/App$1.class
 io/github/jonaskahn/services/user/UserToUserDtoMapperImpl.class
 io/github/jonaskahn/entities/converter/StatusConverter.class
 io/github/jonaskahn/App.class

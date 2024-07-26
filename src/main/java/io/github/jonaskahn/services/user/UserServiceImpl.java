@@ -7,11 +7,11 @@ import io.github.jonaskahn.entities.User;
 import io.github.jonaskahn.entities.enums.Status;
 import io.github.jonaskahn.exception.ShouldNeverOccurException;
 import io.github.jonaskahn.repositories.UserRepository;
+import io.github.jonaskahn.services.authen.PasswordEncoder;
 import io.hypersistence.tsid.TSID;
 import io.jooby.Context;
 import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
-import org.pac4j.core.credentials.password.PasswordEncoder;
 import org.pac4j.core.profile.UserProfile;
 
 import java.util.Optional;

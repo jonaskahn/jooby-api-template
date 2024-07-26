@@ -18,6 +18,7 @@ public class Response<T> {
     public static <T> Response<T> ok(T payload) {
         return Response.<T>builder()
                 .status(StatusCode.OK.value())
+                .payload(payload)
                 .build();
     }
 

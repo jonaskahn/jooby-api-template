@@ -29,7 +29,7 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, Long> implement
 
     @Override
     public Optional<User> findByUsernameOrEmail(String username, String email) {
-        var query = entityManager.createQuery("select u from users u where username = :username or email = :email", User.class);
+        var query = entityManager.createQuery("select u from User u where username = :username or email = :email", User.class);
         query.setParameter("username", username);
         query.setParameter("email", email);
         try {
@@ -43,10 +43,11 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, Long> implement
     @Override
     public Optional<User> findActivatedUserByPreferredUsername(Long preferredUsername) {
         var query = entityManager.createQuery(
-                "select u from users u where preferredUsername = :preferredUsername and status = ${Status.Code.ACTIVATED}",
+                "select u from User u where preferredUsername = :preferredUsername and status = :status",
                 User.class
         );
         query.setParameter("preferredUsername", preferredUsername);
+        query.setParameter("status", Status.ACTIVATED);
         try {
             return Optional.of(query.getSingleResult());
         } catch (Exception e) {
@@ -78,10 +79,14 @@ public class UserRepositoryImpl extends BaseRepositoryImpl<User, Long> implement
         var query = entityManager.createNativeQuery("select * from users where preferred_username = :preferredUsername and status = :status");
         try {
             var result = JpaQueryExecutor.builder(UserDto.class)
-                    .with(query, Map.of("preferredUsername", preferredUsername, "status", Status.Code.ACTIVATED))
+                    .with(query, Map.of(
+                            "preferredUsername", preferredUsername,
+                            "status", Status.Code.ACTIVATED)
+                    )
                     .getSingleResult();
             return Optional.of(result);
         } catch (Exception e) {
+            log.warn("Could not find the users with given preferredUsername", e);
             return Optional.empty();
         }
     }

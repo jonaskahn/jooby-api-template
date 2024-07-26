@@ -43,7 +43,7 @@ public class App extends Jooby {
         install(new HibernateModule().scan("io.github.jonaskahn.entities"));
 
         install(new Pac4jModule().client(
-                        "/api/secure",
+                        "/api/secure/*",
                         conf -> new HeaderClient(
                                 "Authorization",
                                 "Bearer ",
@@ -71,7 +71,15 @@ public class App extends Jooby {
         });
 
         assets("/*", "static");
-        mount("/api", new RouteDefinition());
+        mount("/api", new Jooby() {
+            {
+                install(new JacksonModule(JacksonMapper.INSTANCE));
+                mvc(UserController.class);
+                mvc(AuthController.class);
+                mvc(HealthController.class);
+                mvc(TestRoleController.class);
+            }
+        });
     }
 
     private static void handleSuccess(Context ctx, Object result, String acceptLanguage) {
@@ -119,15 +127,4 @@ public class App extends Jooby {
     public static void main(final String[] args) {
         runApp(args, App::new);
     }
-
-    private static class RouteDefinition extends Jooby {
-        {
-            install(new JacksonModule(JacksonMapper.INSTANCE));
-            mvc(UserController.class);
-            mvc(AuthController.class);
-            mvc(HealthController.class);
-            mvc(TestRoleController.class);
-        }
-    }
-
 }
