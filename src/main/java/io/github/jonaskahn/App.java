@@ -10,6 +10,7 @@ import io.github.jonaskahn.controllers.user.UserController;
 import io.github.jonaskahn.exception.*;
 import io.github.jonaskahn.extensions.RedisModule;
 import io.github.jonaskahn.extensions.ValidatorModule;
+import io.github.jonaskahn.middlewares.context.LanguageContextHolder;
 import io.github.jonaskahn.middlewares.jwt.AdvancedJwtAuthenticator;
 import io.jooby.*;
 import io.jooby.exception.NotFoundException;
@@ -60,14 +61,18 @@ public class App extends Jooby {
         use(new TransactionalRequest().enabledByDefault(true));
         setContextAsService(true);
 
-        after((ctx, result, failure) -> {
+        before((ctx) -> {
             var language = ctx.header("Accept-Language").valueOrNull();
+            LanguageContextHolder.set(language);
+        });
+
+        after((ctx, result, failure) -> {
             ctx.setDefaultResponseType(MediaType.json);
             if (failure == null) {
-                handleSuccess(ctx, result, language);
+                handleSuccess(ctx, result);
             } else {
                 getLog().error("Something went wrong, detail", failure);
-                handleFailure(ctx, failure, language);
+                handleFailure(ctx, failure);
             }
         });
 
@@ -83,45 +88,45 @@ public class App extends Jooby {
         });
     }
 
-    private static void handleSuccess(Context ctx, Object result, String acceptLanguage) {
+    private static void handleSuccess(Context ctx, Object result) {
         ctx.setResponseCode(StatusCode.OK);
         if (result instanceof Response<?>) {
             ctx.render(result);
         } else if (result instanceof StatusCode) {
-            ctx.render(Response.ok(Language.of(acceptLanguage, "app.common.message.success")));
+            ctx.render(Response.ok());
         } else {
             ctx.render(Response.ok(result));
         }
     }
 
-    private static void handleFailure(Context ctx, Throwable failure, String acceptLanguage) {
+    private static void handleFailure(Context ctx, Throwable failure) {
         if (failure instanceof LogicException ex) {
             ctx.setResponseCode(StatusCode.BAD_REQUEST_CODE);
-            ctx.render(Response.fail(Language.of(acceptLanguage, ex.getMessage(), ex.getVariables()), StatusCode.BAD_REQUEST));
+            ctx.render(Response.fail(Language.of(ex.getMessage(), ex.getVariables()), StatusCode.BAD_REQUEST));
         } else if (failure instanceof ValidationException ex) {
             ctx.setResponseCode(StatusCode.PRECONDITION_FAILED);
             ctx.render(Response.fail(ex.getData(), StatusCode.PRECONDITION_FAILED));
         } else if (failure instanceof NotFoundException ex) {
             ctx.setResponseCode(StatusCode.NOT_FOUND);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.notfound"), StatusCode.NOT_FOUND));
+            ctx.render(Response.fail(Language.of("app.common.exception.notfound"), StatusCode.NOT_FOUND));
         } else if (failure instanceof AuthenticationException ex) {
             ctx.setResponseCode(StatusCode.BAD_REQUEST);
-            ctx.render(Response.fail(Language.of(acceptLanguage, ex.getMessage()), StatusCode.BAD_REQUEST));
+            ctx.render(Response.fail(Language.of(ex.getMessage()), StatusCode.BAD_REQUEST));
         } else if (failure instanceof AuthorizationException) {
             ctx.setResponseCode(StatusCode.UNAUTHORIZED);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.AuthorizationException"), StatusCode.UNAUTHORIZED));
+            ctx.render(Response.fail(Language.of("app.common.exception.AuthorizationException"), StatusCode.UNAUTHORIZED));
         } else if (failure instanceof UnauthorizedException || failure instanceof ForbiddenAccessException) {
             ctx.setResponseCode(StatusCode.UNAUTHORIZED);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.AuthorizationException"), StatusCode.UNAUTHORIZED));
+            ctx.render(Response.fail(Language.of("app.common.exception.AuthorizationException"), StatusCode.UNAUTHORIZED));
         } else if (failure instanceof NoResultException) {
             ctx.setResponseCode(StatusCode.BAD_REQUEST);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.no-data"), StatusCode.BAD_REQUEST));
+            ctx.render(Response.fail(Language.of("app.common.exception.no-data"), StatusCode.BAD_REQUEST));
         } else if (failure instanceof Exception) {
             ctx.setResponseCode(StatusCode.SERVER_ERROR);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.server-error"), StatusCode.SERVER_ERROR));
+            ctx.render(Response.fail(Language.of("app.common.exception.server-error"), StatusCode.SERVER_ERROR));
         } else {
             ctx.setResponseCode(StatusCode.SERVER_ERROR);
-            ctx.render(Response.fail(Language.of(acceptLanguage, "app.common.exception.unknown-error"), StatusCode.SERVER_ERROR));
+            ctx.render(Response.fail(Language.of("app.common.exception.unknown-error"), StatusCode.SERVER_ERROR));
         }
     }
 

@@ -1,5 +1,6 @@
 package io.github.jonaskahn.assistant;
 
+import io.github.jonaskahn.middlewares.context.LanguageContextHolder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -37,5 +38,9 @@ public final class Language {
             log.warn("Failed to parse message for key {} in language {}", key, language);
             return key;
         }
+    }
+
+    public static String of(String key, Object... variables) {
+        return of(LanguageContextHolder.currentLanguage(), key, variables);
     }
 }
