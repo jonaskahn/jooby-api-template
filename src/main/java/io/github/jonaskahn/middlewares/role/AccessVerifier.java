@@ -1,19 +1,36 @@
 package io.github.jonaskahn.middlewares.role;
 
-import com.google.inject.ImplementedBy;
+import io.github.jonaskahn.middlewares.context.UserContextHolder;
+import io.jooby.exception.ForbiddenException;
+import org.pac4j.core.profile.UserProfile;
 
-@ImplementedBy(AccessVerifierImpl.class)
-public interface AccessVerifier {
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.Set;
 
-    default boolean hasRole(String role) {
+public final class AccessVerifier {
+
+    public static boolean hasRole(String role) {
         return hasAnyRoles(role);
     }
 
-    boolean hasAnyRoles(String... roles);
+    public static boolean hasAnyRoles(String... roles) {
+        var rolesAsList = Arrays.asList(roles);
+        return Optional.ofNullable(UserContextHolder.getCurrentUser())
+                .map(UserProfile.class::cast)
+                .map(UserProfile::getRoles)
+                .stream()
+                .flatMap(Set::stream)
+                .anyMatch(rolesAsList::contains);
+    }
 
-    default void requireRole(String role) {
+    public static void requireRole(String role) {
         requireAnyRoles(role);
     }
 
-    void requireAnyRoles(String... roles);
+    public static void requireAnyRoles(String... roles) {
+        if (!hasAnyRoles(roles)) {
+            throw new ForbiddenException();
+        }
+    }
 }

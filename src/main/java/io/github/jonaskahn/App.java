@@ -9,7 +9,6 @@ import io.github.jonaskahn.controllers.auth.AuthController;
 import io.github.jonaskahn.controllers.user.UserController;
 import io.github.jonaskahn.exception.*;
 import io.github.jonaskahn.extensions.RedisModule;
-import io.github.jonaskahn.extensions.ValidatorModule;
 import io.github.jonaskahn.middlewares.context.LanguageContextHolder;
 import io.github.jonaskahn.middlewares.jwt.AdvancedJwtAuthenticator;
 import io.jooby.*;
@@ -37,7 +36,6 @@ public class App extends Jooby {
         install(new GuiceModule());
 
         install(new RedisModule());
-        install(new ValidatorModule());
 
         install(new HikariModule());
         install(new FlywayModule());
@@ -67,16 +65,19 @@ public class App extends Jooby {
         });
 
         after((ctx, result, failure) -> {
-            ctx.setDefaultResponseType(MediaType.json);
             if (failure == null) {
+                ctx.setDefaultResponseType(MediaType.json);
                 handleSuccess(ctx, result);
-            } else {
-                getLog().error("Something went wrong, detail", failure);
-                handleFailure(ctx, failure);
             }
         });
 
+        error((ctx, cause, code) -> {
+            ctx.setDefaultResponseType(MediaType.json);
+            handleFailure(ctx, cause);
+        });
+
         assets("/*", "static");
+
         mount("/api", new Jooby() {
             {
                 install(new JacksonModule(JacksonMapper.INSTANCE));

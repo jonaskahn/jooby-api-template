@@ -20,7 +20,7 @@
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jooby.version>3.2.8</jooby.version>
+        <jooby.version>3.2.9</jooby.version>
         <lombok.version>1.18.34</lombok.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <jooby-jackson.version>3.2.6</jooby-jackson.version>

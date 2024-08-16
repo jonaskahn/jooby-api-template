@@ -10,11 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(onConstructor = @__(@Inject))
 @Path("/secure/test")
 public class TestRoleController {
-    private final AccessVerifier accessVerifier;
 
     @GET("/admin-role")
     public String testAdmin() {
-        accessVerifier.requireRole(Roles.ADMIN);
+        AccessVerifier.requireRole(Roles.ADMIN);
         return "ok";
     }
 }

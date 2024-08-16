@@ -14,11 +14,10 @@ import lombok.val;
 @Path("")
 public class AuthController {
     private final AuthenticationService authenticationService;
-    private final BeanValidator validator;
 
     @POST("/auth/generate-token")
     public Response<String> generateToken(GenerateTokenRequest request) {
-        validator.validate(request);
+        BeanValidator.validate(request);
         val token = authenticationService.generateToken(request.username(), request.password(), request.rememberMe());
         return Response.ok("app.common.message.welcome", token);
     }
