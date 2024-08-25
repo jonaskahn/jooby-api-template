@@ -16,6 +16,7 @@ import io.jooby.exception.NotFoundException;
 import io.jooby.exception.UnauthorizedException;
 import io.jooby.flyway.FlywayModule;
 import io.jooby.guice.GuiceModule;
+import io.jooby.handler.CorsHandler;
 import io.jooby.hibernate.HibernateModule;
 import io.jooby.hibernate.TransactionalRequest;
 import io.jooby.hikari.HikariModule;
@@ -42,6 +43,8 @@ public class App extends Jooby {
         install(new HikariModule());
         install(new FlywayModule());
         install(new HibernateModule().scan("io.github.jonaskahn.entities"));
+
+        use(new CorsHandler());
 
         install(new Pac4jModule().client(
                         "/api/secure/*",
