@@ -16,6 +16,7 @@ import io.jooby.exception.NotFoundException;
 import io.jooby.exception.UnauthorizedException;
 import io.jooby.flyway.FlywayModule;
 import io.jooby.guice.GuiceModule;
+import io.jooby.handler.Cors;
 import io.jooby.handler.CorsHandler;
 import io.jooby.hibernate.HibernateModule;
 import io.jooby.hibernate.TransactionalRequest;
@@ -29,6 +30,8 @@ import org.pac4j.core.context.HttpConstants;
 import org.pac4j.http.client.direct.HeaderClient;
 import org.pac4j.jwt.config.signature.SecretSignatureConfiguration;
 import redis.clients.jedis.JedisPooled;
+
+import java.time.Duration;
 
 public class App extends Jooby {
     {
@@ -44,6 +47,12 @@ public class App extends Jooby {
         install(new FlywayModule());
         install(new HibernateModule().scan("io.github.jonaskahn.entities"));
 
+        var corsOpts = new Cors();
+        corsOpts.allowHeader("*");
+        corsOpts.allowMethod("*");
+        corsOpts.allowOrigin("*");
+        corsOpts.setUseCredentials(true);
+        corsOpts.setMaxAge(Duration.ofMinutes(60));
         use(new CorsHandler());
 
         install(new Pac4jModule().client(
